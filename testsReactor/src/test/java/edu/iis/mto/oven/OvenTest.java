@@ -50,12 +50,31 @@ class OvenTest {
     }
 
     @Test
-    void checkIfRunStageThrowsException() throws HeatingException {
+    void checkIfRunStageThrowsExceptionWhenTermalCircuit() throws HeatingException {
         BakingProgram program = BakingProgram.builder().withInitialTemp(80).withStages(stages).build();
         HeatingSettings settings= HeatingSettings.builder().withTargetTemp(100).withTimeInMinutes(30).build();
         doThrow(HeatingException.class).when(heatingModule).termalCircuit(settings);
 
         assertThrows(OvenException.class,()->oven.start(program));
     }
+
+    @Test
+    void checkIfRunStageThrowsExceptionWhenGrill() throws HeatingException {
+        BakingProgram program = BakingProgram.builder().withInitialTemp(80).withStages(stages).build();
+        HeatingSettings settings= HeatingSettings.builder().withTargetTemp(120).withTimeInMinutes(40).build();
+        doThrow(HeatingException.class).when(heatingModule).grill(settings);
+
+        assertThrows(OvenException.class,()->oven.start(program));
+    }
+
+    @Test
+    void checkIfRunStahrowsExceptionWhenGrill() throws HeatingException {
+        BakingProgram program = BakingProgram.builder().withInitialTemp(80).withStages(stages).build();
+        HeatingSettings settings= HeatingSettings.builder().withTargetTemp(120).withTimeInMinutes(40).build();
+        doThrow(HeatingException.class).when(heatingModule).grill(settings);
+
+        assertThrows(OvenException.class,()->oven.start(program));
+    }
+
 
 }
