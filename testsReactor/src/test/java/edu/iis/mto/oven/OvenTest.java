@@ -28,8 +28,8 @@ class OvenTest {
     @BeforeEach
     void setUp(){
         oven = new Oven(heatingModule,fan);
-        ProgramStage programStage1= ProgramStage.builder().withTargetTemp(80).withStageTime(60).withHeat(HEATER).build();
-        ProgramStage programStage2= ProgramStage.builder().withTargetTemp(100).withStageTime(30).withHeat(THERMO_CIRCULATION).build();
+        ProgramStage programStage2= ProgramStage.builder().withTargetTemp(80).withStageTime(60).withHeat(HEATER).build();
+        ProgramStage programStage1= ProgramStage.builder().withTargetTemp(100).withStageTime(30).withHeat(THERMO_CIRCULATION).build();
         ProgramStage programStage3= ProgramStage.builder().withTargetTemp(120).withStageTime(40).withHeat(GRILL).build();
         stages.add(programStage1);
         stages.add(programStage2);
@@ -47,6 +47,15 @@ class OvenTest {
         oven.start(program);
         HeatingSettings settings= HeatingSettings.builder().withTargetTemp(80).withTimeInMinutes(60).build();
         verify(heatingModule).heater(settings);
+    }
+
+    @Test
+    void checkIfRunStageThrowsException() throws HeatingException {
+        BakingProgram program = BakingProgram.builder().withInitialTemp(80).withStages(stages).build();
+        HeatingSettings settings= HeatingSettings.builder().withTargetTemp(100).withTimeInMinutes(30).build();
+        doThrow(HeatingException.class).when(heatingModule).termalCircuit(settings);
+
+        assertThrows(OvenException.class,()->oven.start(program));
     }
 
 }
