@@ -1,6 +1,7 @@
 package edu.iis.mto.oven;
 
 import static edu.iis.mto.oven.HeatType.*;
+import static edu.iis.mto.oven.Oven.HEAT_UP_AND_FINISH_SETTING_TIME;
 import static org.hamcrest.Matchers.equalTo;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,13 +69,15 @@ class OvenTest {
     }
 
     @Test
-    void checkIfRunStahrowsExceptionWhenGrill() throws HeatingException {
-        BakingProgram program = BakingProgram.builder().withInitialTemp(80).withStages(stages).build();
-        HeatingSettings settings= HeatingSettings.builder().withTargetTemp(120).withTimeInMinutes(40).build();
-        doThrow(HeatingException.class).when(heatingModule).grill(settings);
+    void checkInitMethodWhenZeroTemp() {
+        BakingProgram program = BakingProgram.builder().withInitialTemp(0).build();
 
-        assertThrows(OvenException.class,()->oven.start(program));
+        oven.start(program);
+
+        verify(heatingModule,times(0)).heater(HeatingSettings.builder().withTargetTemp(program.getInitialTemp()).withTimeInMinutes(HEAT_UP_AND_FINISH_SETTING_TIME).build());
     }
+
+
 
 
 }
